@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} Recording: {{ recording }} {% endblock %}
+{% block add_head %}
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6 offset-md-3 my-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Recording: {{ recording }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item text-center">
+                                <audio id="player" controls>
+                                    <source src="{{ recording.audio_file.url }}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <a href="{{ recording.audio_file.url }}" class="btn btn-outline-success">Download
+                                    audio</a>
+                            </li>
+                            <li class="list-group-item">
+                                {% if recording.transcription_data %}
+                                    <div class="mb-3">
+                                        <label for="textArea" class="form-label">Transcript</label>
+                                        <textarea class="form-control"
+                                                  id="textArea" rows="15">{{ recording.transcription_data }}</textarea>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <script>
+        const player = new Plyr('#player');
+    </script>
+{% endblock %}

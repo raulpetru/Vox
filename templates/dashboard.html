@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row my-2">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 style="display: inline">Recordings</h4>
+                        <a href="{% url 'upload_recording' %}" class="btn btn-outline-success float-end">Upload new
+                            recording <i
+                                    class="bi bi-cloud-arrow-up"></i></a>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for recording in all_recordings %}
+                                <li class="list-group-item flex-container">
+                                    <a href="{% url 'detail_recording' recording.pk %}"
+                                       class="link-success link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover fs-5">{{ recording }}</a>
+                                    <a href="{% url 'delete_recording' recording.pk %}"
+                                       class="btn btn-outline-danger float-end ms-2 btn-sm"><i class="bi bi-trash"></i></a>
+                                    <span class="float-end">Uploaded at: {{ recording.upload_date_time|date:'d/m/Y H:i' }} (Status: {{ recording.transcription_status }})</span>
+                                </li>
+                            {% empty %}
+                                No uploaded recordings
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

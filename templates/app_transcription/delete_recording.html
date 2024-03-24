@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %} Delete - {{ recording }} {% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 offset-md-3 my-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Delete - {{ recording }}</h3>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <h4 class="card-title">Are you sure you want to delete this recording?</h4>
+                            <p class="card-text">
+                            <h4>Recording name:</h4> {{ recording }}
+                        </div>
+                        <div class="card-footer text-center">
+                            <button type="submit" class="btn btn-outline-danger">Yes</button>
+                            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">No</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}API clients list{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row my-2">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 style="display: inline">API clients list</h4>
+                        <a href="{% url 'create_api' %}" class="btn btn-outline-success float-end">Add new
+                            API client <i
+                                    class="bi bi-cloud-arrow-up"></i></a>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for api_client in all_api_clients %}
+                                <li class="list-group-item flex-container">
+                                    Client name: {{ api_client.client_name }}, API key: {{ api_client.api_key }}
+                                    <a href="{% url 'delete_api_client' api_client.id %}"
+                                       class="btn btn-outline-danger float-end ms-2 btn-sm"><i class="bi bi-trash"></i></a>
+                                </li>
+                            {% empty %}
+                                No API clients
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,9 +1,12 @@
+import json
+
+from django.core.cache import cache
 from ninja import NinjaAPI, Schema
 from ninja.security import APIKeyQuery
 
 from app_transcription.models import APIClient, Recording
 
-api = NinjaAPI()
+api = NinjaAPI(docs_url=None)
 
 
 class ApiKey(APIKeyQuery):
@@ -11,7 +14,9 @@ class ApiKey(APIKeyQuery):
 
     def authenticate(self, request, key):
         try:
-            return APIClient.objects.get(api_key=key)
+            if not cache.get(f'cached_api_key_{key}'):
+                cache.set(f'cached_api_key_{key}', APIClient.objects.get(api_key=key))
+            return cache.get(f'cached_api_key_{key}')
         except APIClient.DoesNotExist:
             pass
 
@@ -23,10 +28,14 @@ api_key = ApiKey()
 def pending_transcriptions(request):
     assert isinstance(request.auth, APIClient)
 
-    pending_list = Recording.objects.filter(transcription_status='Pending').order_by('upload_date_time').all()
-    new_pending_list = {f'{recording.id}': f'{request.build_absolute_uri(recording.audio_file.url)}' for recording in
-                        pending_list}
-    return new_pending_list
+    if not cache.get('pending_transcriptions_cache'):
+        first_in_queue = Recording.objects.filter(transcription_status='Pending').order_by('upload_date_time').first()
+        if first_in_queue:
+            new_pending_list = {f'{first_in_queue.id}': f'{request.build_absolute_uri(first_in_queue.audio_file.url)}'}
+            cache.set('pending_transcriptions_cache', new_pending_list)
+        else:
+            cache.set('pending_transcriptions_cache', json.dumps({}))
+    return cache.get('pending_transcriptions_cache')
 
 
 class Transcript(Schema):
@@ -37,11 +46,16 @@ class Transcript(Schema):
 @api.post('/transcript', auth=api_key)
 def load_transcript(request, transcript: Transcript):
     assert isinstance(request.auth, APIClient)
-    try:
-        recording = Recording.objects.filter(id=transcript.id).first()
+
+    recording = Recording.objects.filter(id=transcript.id).first()
+    if not recording.transcription_status == 'Processed':
         recording.transcription_data = transcript.data
         recording.transcription_status = 'Processed'
         recording.save()
-    except:
-        pass
-    return transcript
+
+
+@api.post('/computing-server-online', auth=api_key)
+def computing_server_online(request):
+    assert isinstance(request.auth, APIClient)
+
+    cache.set('computing_server_online', 1, 35)

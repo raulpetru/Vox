@@ -23,10 +23,14 @@ from Vox import settings
 from userextend.forms import AuthenticationNewForm, PasswordChangeNewForm
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('app_transcription.urls')),
-    path("login/", views.LoginView.as_view(form_class=AuthenticationNewForm), name="login"),
-    path("password_change/", views.PasswordChangeView.as_view(form_class=PasswordChangeNewForm),
-         name="password_change"),
-    path('', include('django.contrib.auth.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  path('admin/', admin.site.urls),
+                  path('', include('app_transcription.urls')),
+                  path("login/",
+                       views.LoginView.as_view(form_class=AuthenticationNewForm, redirect_authenticated_user=True),
+                       name="login"),
+                  path("password_change/", views.PasswordChangeView.as_view(form_class=PasswordChangeNewForm),
+                       name="password_change"),
+                  path('', include('django.contrib.auth.urls')),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]

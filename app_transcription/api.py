@@ -2,15 +2,15 @@ import json
 
 from django.core.cache import cache
 from ninja import NinjaAPI, Schema
-from ninja.security import APIKeyQuery
+from ninja.security import APIKeyQuery, APIKeyHeader
 
 from app_transcription.models import APIClient, Recording
 
 api = NinjaAPI(docs_url=None)
 
 
-class ApiKey(APIKeyQuery):
-    param_name = "api_key"
+class ApiKey(APIKeyHeader):
+    param_name = "X-API-Key"
 
     def authenticate(self, request, key):
         try:
@@ -21,10 +21,10 @@ class ApiKey(APIKeyQuery):
             pass
 
 
-api_key = ApiKey()
+header_key = ApiKey()
 
 
-@api.get("/pending_transcriptions", auth=api_key)
+@api.get("/pending_transcriptions", auth=header_key)
 def pending_transcriptions(request):
     assert isinstance(request.auth, APIClient)
 
@@ -43,7 +43,7 @@ class Transcript(Schema):
     data: str
 
 
-@api.post('/transcript', auth=api_key)
+@api.post('/transcript', auth=header_key)
 def load_transcript(request, transcript: Transcript):
     assert isinstance(request.auth, APIClient)
 
@@ -54,7 +54,7 @@ def load_transcript(request, transcript: Transcript):
         recording.save()
 
 
-@api.post('/computing-server-online', auth=api_key)
+@api.post('/computing-server-online', auth=header_key)
 def computing_server_online(request):
     assert isinstance(request.auth, APIClient)
 

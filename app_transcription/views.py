@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -17,6 +18,12 @@ class RecordingsListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['all_recordings'] = Recording.objects.filter(user=self.request.user)
+
+        online_status = cache.get('computing_server_online')
+        context['online_status'] = online_status
+
+        if cache.get('computing_server_online') == 1:
+            print('server online')
 
         return context
 

@@ -1,47 +1,53 @@
+{% load app_transcription_extras %}
 {% if user.is_authenticated %}
     {% load static %}
-    <nav class="navbar navbar-light navbar-expand-lg sticky-top" style="background-color: var(--bs-teal);">
-        <div class="container-fluid">
-            <img src="{% static 'images/favicon.png' %}" style="max-width: 100%; height: 30px;" alt="logo"
-                 class="img-fluid">
-            <a class="navbar-brand ms-3" href="{% url 'dashboard' %}" style="color: white !important;">Vox</a>
+    <nav class="navbar navbar-light navbar-expand-lg sticky-top" style="background-color: var(--bs-indigo);">
+        <div class="container-fluid d-flex justify-content-between">
+            <div>
+                <img src="{% static 'images/favicon.png' %}" style="max-width: 100%; height: 50px;" alt="logo"
+                     class="img-fluid">
+                <a class="navbar-brand ms-3" href="{% url 'dashboard' %}" style="color: white !important;">Vox</a>
+            </div>
+            <div class="card" id="computing" style="display: inline-block !important;">
+                {% online_status %}
+            </div>
             <button class="navbar-toggler d-print-none" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
                     style=" border-color: white !important;">
                 <span class="navbar-toggler-icon" style="filter: brightness(0) invert(1);"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                </ul>
-                <div>
-                    {% if user.is_authenticated %}
-                        <form method="post" action="{% url 'logout' %}">
-                            {% csrf_token %}
-                            <div class="dropdown">
-                                <button class="btn btn-outline-light dropdown-toggle" type="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                    My profile, {{ user.username }}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            </ul>
+            <div>
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <div class="dropdown me-2">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                My profile, {{ user.username }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'password_change' %}">Change password</a>
+                                </li>
+                                {% if perms.app_transcription.api_manage %}
+                                    <li><a class="dropdown-item" href="{% url 'api_clients_list' %}">API clients
+                                        list</a>
                                     </li>
-                                    {% if perms.app_transcription.api_manage %}
-                                        <li><a class="dropdown-item" href="{% url 'api_clients_list' %}">API clients
-                                            list</a>
-                                        </li>
-                                    {% endif %}
-                                    <li>
-                                        <button type="submit" class="dropdown-item">Logout</button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </form>
-                    {% else %}
-                        <a href='{% url 'login' %}' class="btn btn-outline-light">Login</a>
-                    {% endif %}
-                </div>
+                                {% endif %}
+                                <li>
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                {% else %}
+                    <a href='{% url 'login' %}' class="btn btn-outline-light">Login</a>
+                {% endif %}
             </div>
         </div>
     </nav>

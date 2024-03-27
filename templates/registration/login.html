@@ -12,6 +12,7 @@
         <form method="post">
             {% csrf_token %}
             <img class="mb-4" src="{% static 'images/favicon.png' %}" alt="" width="57" height="57">
+            <span class="fs-1 text">Vox</span>
             <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
             <div class="form-floating">
                 {{ form.username }}

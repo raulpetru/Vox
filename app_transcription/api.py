@@ -2,7 +2,7 @@ import json
 
 from django.core.cache import cache
 from ninja import NinjaAPI, Schema
-from ninja.security import APIKeyQuery, APIKeyHeader
+from ninja.security import APIKeyHeader
 
 from app_transcription.models import APIClient, Recording
 

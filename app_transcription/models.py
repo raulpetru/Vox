@@ -20,7 +20,7 @@ def file_path(instance, filename):
 class Recording(models.Model):
     name = models.CharField(max_length=255)
     audio_file = models.FileField(upload_to=file_path, validators=[FileExtensionValidator(
-        ['opus', 'flac', 'webm', 'weba', 'wav', 'ogg', 'm4a', 'oga', 'mid', 'mp3', 'aiff', 'wma', 'au'])])
+        ['opus', 'flac', 'webm', 'weba', 'wav', 'ogg', 'm4a', 'oga', 'mid', 'mp3', 'aiff', 'wma', 'au', 'aac'])])
     upload_date_time = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     STATUS_CHOICES = [('Pending', 'Pending'), ('Processed', 'Processed')]

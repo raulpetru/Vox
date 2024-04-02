@@ -29,9 +29,10 @@ def pending_transcriptions(request):
     assert isinstance(request.auth, APIClient)
 
     if not cache.get('pending_transcriptions_cache'):
-        first_in_queue = Recording.objects.filter(transcription_status='Pending').order_by('upload_date_time').first()
-        if first_in_queue:
-            new_pending_list = {f'{first_in_queue.id}': f'{request.build_absolute_uri(first_in_queue.audio_file.url)}'}
+        queue_list = Recording.objects.filter(transcription_status='Pending').order_by('upload_date_time')
+        if queue_list:
+            new_pending_list = {f'{recording.id}': f'{request.build_absolute_uri(recording.audio_file.url)}' for
+                                recording in queue_list}
             cache.set('pending_transcriptions_cache', new_pending_list)
         else:
             cache.set('pending_transcriptions_cache', json.dumps({}))

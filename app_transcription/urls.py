@@ -12,6 +12,7 @@ urlpatterns = [
     path('create_api_client/', views.APIClientCreateView.as_view(), name='create_api'),
     path('api_clients_list/', views.APIClientListView.as_view(), name='api_clients_list'),
     path('delete_api_client/<int:pk>', views.APIClientDeleteView.as_view(), name='delete_api_client'),
+    path('about/', views.AboutView.as_view(), name='about'),
 
     path('api/', api.urls),
 ]

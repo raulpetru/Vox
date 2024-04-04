@@ -4,5 +4,4 @@ __pycache__/
 /secret_key.py
 /db.sqlite3
 /media
-/static
 /staticfiles

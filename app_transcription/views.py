@@ -4,7 +4,7 @@ from django.core.cache import cache
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, DeleteView, TemplateView
 
 from app_transcription.forms import RecordingCreateForm, APIClientCreateForm
 from app_transcription.models import Recording, APIClient
@@ -100,3 +100,7 @@ class APIClientDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVie
     model = APIClient
     success_url = reverse_lazy('api_clients_list')
     permission_required = 'app_transcription.api_manage'
+
+
+class AboutView(TemplateView):
+    template_name = 'about.html'
